@@ -35,7 +35,7 @@ body {
 }
 
 .wheel-popover {
-	height: calc(100vh - 9rem);
+	height: calc(100vh - 3rem);
 	position: fixed;
 	right: 0;
 	bottom: 0;
@@ -44,6 +44,12 @@ body {
 	padding: 2rem;
 	background-color: #fff;
 	/* text-align: center; */
+}
+
+@media (min-width: 992px) {
+	.wheel-popover {
+		height: calc(100vh - 9rem);
+	}
 }
 
 .wheel-popover__button {
