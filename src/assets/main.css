@@ -3,17 +3,8 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
-	box-sizing: border-box;
-}
-
-*::before,
-*::after {
-	box-sizing: inherit;
-}
-
 body {
-	background-color: #000;
+	background-color: #111;
 	-webkit-user-select: none;
 	user-select: none;
 	font-family: Montserrat, sans-serif;
@@ -30,12 +21,12 @@ body {
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: cover;
-	opacity: .4;
+	opacity: .3;
 	cursor: pointer;
 }
 
 .wheel-popover {
-	height: calc(100vh - 3rem);
+	height: calc(100vh - 9rem);
 	position: fixed;
 	right: 0;
 	bottom: 0;
@@ -43,52 +34,63 @@ body {
 	z-index: 1;
 	padding: 2rem;
 	background-color: #fff;
-	/* text-align: center; */
-}
-
-@media (min-width: 992px) {
-	.wheel-popover {
-		height: calc(100vh - 9rem);
-	}
+	overflow: scroll;
 }
 
 .wheel-popover__button {
-	margin-top: -3rem;
-	margin-bottom: 2rem;
-	padding: 1rem 2rem;
+	margin-top: -1rem;
+	/* margin-bottom: 2rem; */
+	padding: 1rem 1.5rem;
 	border: 3px solid #fff;
 	color: #fff;
 	background-color: #5832ab;
-	font-size: 3rem;
+	font-size: 1.2rem;
 	font-family: inherit;
 	cursor: pointer;
+	position: absolute;
 }
 
 .wheel-popover__button:hover {
-	transform: scale(1.2);
+	transform: scale(1.1);
 }
 
 .wheel {
-	font-size: 3rem;
+	font-size: 1rem;
 	width: 20em;
 	height: 20em;
 	margin-right: auto;
 	margin-left: auto;
 	position: relative;
-	/* pointer-events: none; */
 	background-color: #111;
-	box-shadow: 0 0 0 9px #fff, 0 0 0 18px #000;
+	box-shadow: 0 0 0 6px #fff, 0 0 0 14px #111;
 	border-radius: 50%;
 }
 
 .wheel::after {
 	content: '';
 	position: absolute;
-	top: -16px;
+	top: -12px;
 	left: calc(50% - 16px);
-	border-width: 32px 16px 0 16px;
+	border-width: 24px 10px 0 10px;
 	border-style: solid;
 	border-color: black transparent transparent transparent;
+}
+
+@media (min-width: 992px) {
+	.wheel-popover__button {
+		margin-top: -2rem;
+		margin-bottom: 2rem;
+		padding: 1rem 2rem;
+		font-size: 3rem;
+	}
+
+	.wheel {
+		font-size: 2.2rem;
+	}
+
+	.wheel::after {
+		border-width: 28px 14px 0 14px;
+	}
 }
 
 .wheel__spinner {
@@ -96,7 +98,7 @@ body {
 	height: 20em;
 	position: relative;
 	transition: transform;
-	transition-duration: 5s;
+	transition-duration: 2.5s;
 	transition-timing-function: ease-out;
 	transform: rotate(0deg);
 }
@@ -270,7 +272,7 @@ body {
 }
 
 .board__word {
-	white-space: nowrap;
+	white-space: wrap;
 }
 
 .board__letter {
@@ -278,8 +280,8 @@ body {
 	margin: 0 0 9px 9px;
 	justify-content: center;
 	align-items: center;
-	width: 62px;
-	height: 72px;
+	width: 58px;
+	height: 68px;
 	color: inherit;
 	background-color: #fff;
 }

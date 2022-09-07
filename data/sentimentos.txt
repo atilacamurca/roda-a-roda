@@ -20,7 +20,6 @@ atração
 bem-estar
 bom humor
 bondade
-brio
 calma
 carinho
 carisma
@@ -48,7 +47,7 @@ devoção
 dignidade
 disposição
 diversão
-efusão
+dor
 emoção
 empatia
 empolgação
@@ -61,7 +60,6 @@ euforia
 excitação
 êxtase
 fascínio
-fé
 felicidade
 força
 generosidade
@@ -134,7 +132,6 @@ desapego
 desapontamento
 desconfiança
 desconforto
-desconsolo
 descrença
 desencanto
 desespero
@@ -142,8 +139,6 @@ desgosto
 desilusão
 desinteresse
 desorientação
-dó
-dor
 dúvida
 egoísmo
 embaraço
@@ -207,7 +202,6 @@ tédio
 temor
 tensão
 terror
-torpor
 tristeza
 vergonha
 vulnerabilidade

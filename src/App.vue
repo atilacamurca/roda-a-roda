@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <button type="button" v-on:click="toggleWheel" class="wheel-button">Wheel</button>
+  <div class="container mx-auto">
+    <button type="button" v-on:click="toggleWheel" class="wheel-button">&nbsp;</button>
 
     <div class="wheel-popover" v-if="showWheel">
       <button class="wheel-popover__button" type="button" @click="spinWheel('cw')">RODA!</button>
@@ -12,22 +12,23 @@
               <template v-else-if="seg === 'B'">Perde</template>
               <template v-else>{{ seg }}pt</template></span>
           </div>
-          <div class="wheel__middle"><img src="logo.png"></div>
+          <div class="wheel__middle"><img src="./assets/logo.png"></div>
         </div>
       </div>
     </div>
 
-    <div class="board">
+    <div class="ml-4 mt-4 bg-teal-400 pt-2 font-semibold text-5xl border-8 border-[#489fb4]">
       <span v-for="(word, index) in phrase" :key="word + '' + index">
-        <span class="board__letter board__letter--space" v-if="index !== 0">&nbsp;</span>
-        <span class="board__word">
-          <span v-for="(item, index2) in word" :key="item + '' + index2" class="board__letter"
+        <!-- <span class="board__letter board__letter--space" v-if="index !== 0">&nbsp;</span> -->
+        <br v-if="index !== 0"/>
+        <span class="board__word inline-flex flex-wrap">
+          <span v-for="(item, index2) in word" :key="item + '' + index2" class="board__letter border-2 border-slate-800"
             :hidden="!item.visible">{{ item.char }}</span>
         </span>
       </span>
     </div>
 
-    <div class="clue">{{ clue }}</div>
+    <div class="clue container mx-auto">{{ clue }}</div>
     <div class="text-white text-center font-bold text-3xl mt-2">Valendo {{ currentScore }}pts</div>
 
     <div class="controls">
@@ -57,6 +58,51 @@
               </div>
             </div>
           </div>
+          <div class="my-3">
+            <div class="flex justify-center">
+              <div class="mb-3 xl:w-96">
+                <input v-model="resposta" type="text" class="form-control
+        block
+        w-full
+        px-3
+        py-1.5
+        text-base
+        font-normal
+        text-gray-700
+        bg-white bg-clip-padding
+        border border-solid border-gray-300
+        rounded
+        transition
+        ease-in-out
+        m-0
+        focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" placeholder="Resposta" />
+              </div>
+              <div>
+                <button type="button" class="inline-block px-6 py-2 ml-2 border-2 border-blue-600
+                 text-blue-600 font-medium text-xs leading-tight uppercase rounded
+                 hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0
+                 transition duration-150 ease-in-out" @click.prevent="guessPhrase">Responder</button>
+              </div>
+            </div>
+            <transition name="bounce">
+              <div
+                v-show="rightAnswer"
+                class="mx-auto w-3/4 bg-green-100 rounded-lg py-5 px-6 mb-4
+                 text-center text-2xl text-green-700 mb-3" role="alert">
+                Parabéns! Você acertou.
+              </div>
+            </transition>
+            <transition name="bounce">
+              <div
+                v-show="wrongAnswer"
+                class="mx-auto w-3/4 bg-red-100 rounded-lg py-5 px-6 mb-4
+                text-center text-2xl text-red-700 mb-3" role="alert">
+                Que pena, você errou.
+              </div>
+            </transition>
+
+            Questão {{ currentPhrase + 1 }} de {{ totalQuestions }}
+          </div>
         </div>
       </section>
     </div>
@@ -64,16 +110,8 @@
 </template>
 
 <script>
-
-
-const questions = [
-  { clue: "Phrase/Quotation", phrase: "I just don't know what went wrong" },
-  { clue: "On The Map", phrase: "Neighagra Falls" },
-  { clue: "Husband & Wife", phrase: "Twilight Velvet & Night Light" },
-  { clue: "Person", phrase: "Sea Serpent Steven Magnet" },
-  { clue: "What are you doing?", phrase: "Being twenty percent cooler" },
-  { clue: "Animais", phrase: 'abelha barracuda camundongo' }
-];
+import questions from './assets/questions.json';
+import accents from 'remove-accents';
 
 const initialState = () => ({
   players: [
@@ -135,7 +173,10 @@ export default {
       showWheel: false,
       wheelSpinDegs: 0,
       wheelSpinDuration: 0,
-      wheelSegments: ['S', 5, 1, 2, 4, 1, 3, 2, 1, 3, 1, 2, 5, 3, 1, 2, 6, 2, 4, 6, 'B', 3, 2, 1]
+      wheelSegments: ['S', 5, 1, 2, 4, 1, 3, 2, 1, 3, 1, 2, 5, 3, 1, 2, 6, 2, 4, 6, 'B', 3, 2, 1],
+      resposta: '',
+      rightAnswer: false,
+      wrongAnswer: false
     }
   },
   storage: {
@@ -143,15 +184,6 @@ export default {
     namespace: 'roda-a-roda'
   },
   mounted() {
-    // let item;
-    // const urlParams = new URL(document.location.href).searchParams;
-    // if (urlParams.get('q')) {
-    //   item = questions[urlParams.get('q')];
-    // } else {
-    //   item = questions[Math.floor(Math.random() * questions.length)];
-    // }
-    // this.phrase = this.parsePhrase(item.phrase);
-    // this.clue = item.clue;
     if (this.currentPhrase === null) {
       this.currentPhrase = 0;
     }
@@ -164,7 +196,7 @@ export default {
       // recuperar letras já reveladas
       this.phrase.forEach((word) => {
         word.forEach((letter) => {
-            letter.visible = this.alphabetUsed[letter.char];
+          letter.visible = this.alphabetUsed[letter.char] || letter.char === '-';
         });
       });
     },
@@ -178,14 +210,11 @@ export default {
         const characters = word.split('');
         const letterArray = [];
         characters.forEach((char) => {
-          let visible = true;
           char = char.toUpperCase();
-          if (char.match(/[A-Z]/)) {
-            visible = false;
-          }
+          let visible = char.match(/[A-Z]/) === null;
           letterArray.push({
-            char: char,
-            visible: visible
+            char,
+            visible
           });
         });
         wordArray.push(letterArray);
@@ -250,6 +279,7 @@ export default {
       this.currentScore = state.currentScore;
       this.alphabetUsed = state.alphabetUsed;
       this.defineQuestion();
+      this.resposta = '';
     },
     previousQuestion() {
       this.currentPhrase--;
@@ -265,36 +295,48 @@ export default {
         this.currentPhrase = 0;
       }
       this.reset();
+    },
+    guessPhrase() {
+      const answer = accents.remove(this.resposta).toUpperCase();
+      if (answer === questions[this.currentPhrase].phrase.toUpperCase()) {
+        this.rightAnswer = true;
+        this.showBoard();
+        setTimeout(() => {
+          this.rightAnswer = false;
+        }, 2000);
+      } else {
+        this.resposta = '';
+        this.wrongAnswer = true;
+        setTimeout(() => {
+          this.wrongAnswer = false;
+        }, 2000);
+      }
+    }
+  },
+  computed: {
+    totalQuestions() {
+      return questions.length;
     }
   }
 }
 </script>
 
 <style scoped>
-header {
-  line-height: 1.5;
+.bounce-enter-active {
+  animation: bounce-in 0.5s;
 }
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.bounce-leave-active {
+  animation: bounce-in 0.5s reverse;
 }
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+@keyframes bounce-in {
+  0% {
+    transform: scale(0);
   }
-
-  .logo {
-    margin: 0 2rem 0 0;
+  50% {
+    transform: scale(1.25);
   }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
+  100% {
+    transform: scale(1);
   }
 }
 </style>
