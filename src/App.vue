@@ -307,7 +307,7 @@ export default {
       this.reset();
     },
     guessPhrase() {
-      const answer = accents.remove(this.resposta).toUpperCase();
+      const answer = accents.remove(this.resposta).trim().toUpperCase();
       if (answer === accents.remove(questions[this.currentPhrase].phrase).toUpperCase()) {
         this.rightAnswer = true;
         this.showBoard();
