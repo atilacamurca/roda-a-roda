@@ -85,13 +85,13 @@
               </div>
             </div>
             <transition name="bounce">
-              <div v-show="rightAnswer" class="mx-auto w-3/4 bg-green-100 rounded-lg py-5 px-6 mb-4
+              <div v-show="rightAnswer" class="mx-auto w-3/4 bg-green-100 rounded-lg py-5 px-6
                  text-center text-2xl text-green-700 mb-3" role="alert">
                 Parabéns! Você acertou.
               </div>
             </transition>
             <transition name="bounce">
-              <div v-show="wrongAnswer" class="mx-auto w-3/4 bg-red-100 rounded-lg py-5 px-6 mb-4
+              <div v-show="wrongAnswer" class="mx-auto w-3/4 bg-red-100 rounded-lg py-5 px-6
                 text-center text-2xl text-red-700 mb-3" role="alert">
                 Que pena, você errou.
               </div>
