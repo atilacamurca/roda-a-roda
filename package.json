@@ -10,6 +10,7 @@
   "dependencies": {
     "lodash": "^4.17.21",
     "remove-accents": "^0.4.2",
+    "screenfull": "^6.0.2",
     "vue": "^2.7.10",
     "vuejs-storage": "^3.1.1"
   },

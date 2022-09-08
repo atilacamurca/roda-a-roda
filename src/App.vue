@@ -20,7 +20,7 @@
     <div class="ml-4 mt-4 bg-teal-400 pt-2 font-semibold text-5xl border-8 border-[#489fb4]">
       <span v-for="(word, index) in phrase" :key="word + '' + index">
         <!-- <span class="board__letter board__letter--space" v-if="index !== 0">&nbsp;</span> -->
-        <br v-if="index !== 0"/>
+        <br v-if="index !== 0" />
         <span class="board__word inline-flex flex-wrap">
           <span v-for="(item, index2) in word" :key="item + '' + index2" class="board__letter border-2 border-slate-800"
             :hidden="!item.visible">{{ item.char }}</span>
@@ -28,7 +28,7 @@
       </span>
     </div>
 
-    <div class="clue container mx-auto">{{ clue }}</div>
+    <div class="clue container mx-auto mt-2">{{ clue }}</div>
     <div class="text-white text-center font-bold text-3xl mt-2">Valendo {{ currentScore }}pts</div>
 
     <div class="controls">
@@ -85,23 +85,30 @@
               </div>
             </div>
             <transition name="bounce">
-              <div
-                v-show="rightAnswer"
-                class="mx-auto w-3/4 bg-green-100 rounded-lg py-5 px-6 mb-4
+              <div v-show="rightAnswer" class="mx-auto w-3/4 bg-green-100 rounded-lg py-5 px-6 mb-4
                  text-center text-2xl text-green-700 mb-3" role="alert">
                 Parabéns! Você acertou.
               </div>
             </transition>
             <transition name="bounce">
-              <div
-                v-show="wrongAnswer"
-                class="mx-auto w-3/4 bg-red-100 rounded-lg py-5 px-6 mb-4
+              <div v-show="wrongAnswer" class="mx-auto w-3/4 bg-red-100 rounded-lg py-5 px-6 mb-4
                 text-center text-2xl text-red-700 mb-3" role="alert">
                 Que pena, você errou.
               </div>
             </transition>
 
-            Questão {{ currentPhrase + 1 }} de {{ totalQuestions }}
+            <div class="flex justify-between">
+              <div>
+                Questão {{ currentPhrase + 1 }} de {{ totalQuestions }}
+              </div>
+              <div>
+                <button type="button" @click.prevent="goFullscreen"
+                 class="inline-block px-6 py-2 border-2 border-gray-800 text-gray-800
+                 font-medium text-xs leading-tight uppercase rounded hover:bg-black
+                 hover:bg-opacity-5 focus:outline-none focus:ring-0 transition
+                 duration-150 ease-in-out">Tela cheia</button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -112,6 +119,7 @@
 <script>
 import questions from './assets/questions.json';
 import accents from 'remove-accents';
+import screenfull from 'screenfull';
 
 const initialState = () => ({
   players: [
@@ -307,9 +315,17 @@ export default {
       } else {
         this.resposta = '';
         this.wrongAnswer = true;
+        this.setNextPlayer();
         setTimeout(() => {
           this.wrongAnswer = false;
         }, 2000);
+      }
+    },
+    goFullscreen() {
+      console.log('screenfull.enabled:', screenfull.isEnabled)
+      if (screenfull.isEnabled) {
+        screenfull.request();
+        window.screen.orientation.lock('landscape');
       }
     }
   },
@@ -325,16 +341,20 @@ export default {
 .bounce-enter-active {
   animation: bounce-in 0.5s;
 }
+
 .bounce-leave-active {
   animation: bounce-in 0.5s reverse;
 }
+
 @keyframes bounce-in {
   0% {
     transform: scale(0);
   }
+
   50% {
     transform: scale(1.25);
   }
+
   100% {
     transform: scale(1);
   }
