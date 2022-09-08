@@ -310,9 +310,11 @@ export default {
       const answer = accents.remove(this.resposta).trim().toUpperCase();
       if (answer === accents.remove(questions[this.currentPhrase].phrase).toUpperCase()) {
         this.rightAnswer = true;
+        this.$confetti.start();
         this.showBoard();
         setTimeout(() => {
           this.rightAnswer = false;
+          this.$confetti.stop();
         }, 2000);
       } else {
         this.resposta = '';
