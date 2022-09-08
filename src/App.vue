@@ -120,6 +120,7 @@
 import questions from './assets/questions.json';
 import accents from 'remove-accents';
 import screenfull from 'screenfull';
+import _ from 'lodash';
 
 const initialState = () => ({
   players: [
@@ -182,6 +183,8 @@ export default {
       wheelSpinDegs: 0,
       wheelSpinDuration: 0,
       wheelSegments: ['S', 5, 1, 2, 4, 1, 3, 2, 1, 3, 1, 2, 5, 3, 1, 2, 6, 2, 4, 6, 'B', 3, 2, 1],
+      wheelDeegres: [360, 375, 390, 405, 420, 435, 450, 465, 480, 495, 510, 525, 540, 555, 570, 585, 600, 615, 630, 645, 660, 675, 690, 705],
+      currentSegment: 0,
       resposta: '',
       rightAnswer: false,
       wrongAnswer: false
@@ -204,11 +207,13 @@ export default {
       // recuperar letras já reveladas
       this.phrase.forEach((word) => {
         word.forEach((letter) => {
-          letter.visible = this.alphabetUsed[letter.char] || letter.char === '-';
+          const l = accents.remove(letter.char)
+          letter.visible = this.alphabetUsed[l] || letter.char === '-';
         });
       });
     },
     toggleWheel: function () {
+      this.wheelSpinDegs = -this.wheelDeegres[this.currentSegment];
       this.showWheel = !this.showWheel;
     },
     parsePhrase: function (phrase) {
@@ -219,7 +224,7 @@ export default {
         const letterArray = [];
         characters.forEach((char) => {
           char = char.toUpperCase();
-          let visible = char.match(/[A-Z]/) === null;
+          let visible = accents.remove(char).match(/[A-Z]/) === null;
           letterArray.push({
             char,
             visible
@@ -233,7 +238,7 @@ export default {
       let exists = 0;
       this.phrase.forEach((word) => {
         word.forEach((letter) => {
-          if (letter.char === activatedLetter) {
+          if (accents.remove(letter.char) === activatedLetter) {
             letter.visible = true;
             this.players[this.currentPlayer].score += this.currentScore;
             exists++;
@@ -252,15 +257,12 @@ export default {
         });
       });
     },
-    spinWheel: function (dir = 'cw') {
-      const min = 365;
-      const max = 1825;
-      let randomQuantity = Math.floor(Math.random() * (max - min + 1) + min);
-      if (dir === 'ccw') {
-        randomQuantity = 0 - randomQuantity;
-      }
-      this.wheelSpinDegs += randomQuantity;
-      this.wheelSpinDuration = 0.5;
+    spinWheel: function () {
+      this.currentSegment = _.random(0, this.wheelDeegres.length - 1);
+      this.wheelSpinDegs = -(this.wheelDeegres[this.currentSegment] + 360);
+      setTimeout(() => {
+        this.definePts(this.wheelSegments[this.currentSegment]);
+      }, 5000);
     },
     definePts(seg) {
       if (seg === 'S') {
@@ -306,7 +308,7 @@ export default {
     },
     guessPhrase() {
       const answer = accents.remove(this.resposta).toUpperCase();
-      if (answer === questions[this.currentPhrase].phrase.toUpperCase()) {
+      if (answer === accents.remove(questions[this.currentPhrase].phrase).toUpperCase()) {
         this.rightAnswer = true;
         this.showBoard();
         setTimeout(() => {
@@ -322,7 +324,6 @@ export default {
       }
     },
     goFullscreen() {
-      console.log('screenfull.enabled:', screenfull.isEnabled)
       if (screenfull.isEnabled) {
         screenfull.request();
         window.screen.orientation.lock('landscape');

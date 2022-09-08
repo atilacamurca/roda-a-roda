@@ -5,7 +5,7 @@ const accents = require('remove-accents');
 
 function parseFile(filename) {
     const content = fs.readFileSync(path.join(__dirname, filename), 'utf-8');
-    const split = content.trim().split(/\r?\n/).map(value => accents.remove(value));
+    const split = content.trim().split(/\r?\n/); // .map(value => accents.remove(value));
     const filtered = _.filter(split, value => value.length < 10)
     return _.chunk(_.shuffle(filtered), 3);
 }
